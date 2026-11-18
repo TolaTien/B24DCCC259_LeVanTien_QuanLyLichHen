@@ -3,105 +3,121 @@ package com.example.thuchanh2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tvStatTotal, tvStatRead, tvStatUnread;
-    private ListView lvBooks;
+    public static final String EXTRA_APPOINTMENT_ID = "appointment_id";
+
+    private TextView tvStatTotal;
+    private TextView tvStatReminder;
+    private TextView tvStatNoReminder;
+    private ListView lvAppointments;
     private LinearLayout layoutEmpty;
-    private FloatingActionButton fabAdd;
+    private Button btnAddAppointment;
+    private Button btnLogout;
 
-    private BookManager bookManager;
-    private BookAdapter bookAdapter;
+    private DatabaseHelper dbHelper;
+    private AppointmentAdapter adapter;
+    private ArrayList<Appointment> appointmentList;
 
-    private final ActivityResultLauncher<Intent> addBookLauncher =
+    private final ActivityResultLauncher<Intent> actionLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    refreshList();
-                }
-            });
-
-    private final ActivityResultLauncher<Intent> detailLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    refreshList();
+                loadDataFromDatabase();
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    String msg = result.getData().getStringExtra(AppPopup.EXTRA_POPUP_MESSAGE);
+                    if (msg != null && !msg.isEmpty()) {
+                        AppPopup.showSuccess(this, msg);
+                    }
                 }
             });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        dbHelper = new DatabaseHelper(this);
 
         tvStatTotal = findViewById(R.id.tvStatTotal);
-        tvStatRead = findViewById(R.id.tvStatRead);
-        tvStatUnread = findViewById(R.id.tvStatUnread);
-        lvBooks = findViewById(R.id.lvBooks);
+        tvStatReminder = findViewById(R.id.tvStatReminder);
+        tvStatNoReminder = findViewById(R.id.tvStatNoReminder);
+        lvAppointments = findViewById(R.id.lvAppointments);
         layoutEmpty = findViewById(R.id.layoutEmpty);
-        fabAdd = findViewById(R.id.fabAdd);
+        btnAddAppointment = findViewById(R.id.btnAddAppointment);
+        btnLogout = findViewById(R.id.btnLogout);
 
-        bookManager = BookManager.getInstance();
-        bookAdapter = new BookAdapter(this, bookManager.getBookList());
-        bookAdapter.setOnItemClickListener(this::openBookDetail);
-        lvBooks.setAdapter(bookAdapter);
+        appointmentList = new ArrayList<>();
+        adapter = new AppointmentAdapter(this, appointmentList);
+        lvAppointments.setAdapter(adapter);
 
-        lvBooks.setOnItemClickListener((parent, view, position, id) -> openBookDetail(position));
-
-        fabAdd.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddBookActivity.class);
-            addBookLauncher.launch(intent);
+        // Nhấn vào một dòng để mở màn hình chi tiết lịch hẹn (truyền id qua Intent)
+        lvAppointments.setOnItemClickListener((parent, view, position, id) -> {
+            Appointment selected = adapter.getItem(position);
+            Intent intent = new Intent(MainActivity.this, AppointmentDetailActivity.class);
+            intent.putExtra(EXTRA_APPOINTMENT_ID, selected.getId());
+            actionLauncher.launch(intent);
         });
 
-        refreshList();
-    }
+        // Mở màn hình thêm lịch hẹn
+        btnAddAppointment.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddAppointmentActivity.class);
+            actionLauncher.launch(intent);
+        });
 
-    private void openBookDetail(int position) {
-        if (position >= 0 && position < bookManager.getBookList().size()) {
-            Intent intent = new Intent(MainActivity.this, BookDetailActivity.class);
-            intent.putExtra("book_index", position);
-            detailLauncher.launch(intent);
+        // Đăng xuất và chuyển về màn hình LoginActivity kèm thông báo popup
+        btnLogout.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.putExtra(AppPopup.EXTRA_POPUP_MESSAGE, getString(R.string.msg_logout_success));
+            startActivity(intent);
+            finish();
+        });
+
+        // Hiển thị thông báo popup nếu vừa đăng nhập thành công
+        if (getIntent() != null) {
+            String popupMsg = getIntent().getStringExtra(AppPopup.EXTRA_POPUP_MESSAGE);
+            if (popupMsg != null && !popupMsg.isEmpty()) {
+                AppPopup.showSuccess(this, popupMsg);
+                getIntent().removeExtra(AppPopup.EXTRA_POPUP_MESSAGE);
+            }
         }
     }
 
-    private void refreshList() {
-        bookAdapter.notifyDataSetChanged();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadDataFromDatabase();
+    }
 
-        ArrayList<Book> books = bookManager.getBookList();
-        int total = books.size();
-        int read = bookManager.getReadCount();
-        int unfinished = bookManager.getUnfinishedCount();
+    private void loadDataFromDatabase() {
+        // Truy vấn danh sách lịch hẹn từ SQLite (ORDER BY date ASC, time ASC)
+        appointmentList = dbHelper.getAllAppointments();
+        adapter.setAppointments(appointmentList);
 
-        tvStatTotal.setText(String.valueOf(total));
-        tvStatRead.setText(String.valueOf(read));
-        tvStatUnread.setText(String.valueOf(unfinished));
+        // Truy vấn thống kê từ SQLite
+        int totalCount = dbHelper.countAll();
+        int reminderCount = dbHelper.countReminders();
+        int noReminderCount = Math.max(0, totalCount - reminderCount);
 
-        if (total == 0) {
-            lvBooks.setVisibility(View.GONE);
+        tvStatTotal.setText(String.valueOf(totalCount));
+        tvStatReminder.setText(String.valueOf(reminderCount));
+        tvStatNoReminder.setText(String.valueOf(noReminderCount));
+
+        // Xử lý hiển thị khi danh sách rỗng
+        if (appointmentList.isEmpty()) {
+            lvAppointments.setVisibility(View.GONE);
             layoutEmpty.setVisibility(View.VISIBLE);
         } else {
-            lvBooks.setVisibility(View.VISIBLE);
+            lvAppointments.setVisibility(View.VISIBLE);
             layoutEmpty.setVisibility(View.GONE);
         }
     }

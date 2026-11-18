@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- PTIT Brand Colors -->
+    <!-- ĐỔI THƯƠNG HIỆU (Brand Tokens - PTIT + ui-ux tokens.css) -->
     <color name="ptit_red">#CE2020</color>
     <color name="ptit_red_dark">#A01818</color>
     <color name="ptit_red_light">#F5E0E0</color>
@@ -9,28 +9,35 @@
     <color name="ptit_blue_light">#E3EFF8</color>
     <color name="ptit_orange">#DD6B20</color>
 
-    <!-- UI Colors -->
-    <color name="background_primary">#F4F6F9</color>
-    <color name="background_card">#FFFFFF</color>
-    <color name="text_primary">#1A202C</color>
-    <color name="text_secondary">#4A5568</color>
-    <color name="text_hint">#A0AEC0</color>
-    <color name="divider">#E2E8F0</color>
-    <color name="input_background">#F7FAFC</color>
-    <color name="input_stroke">#CBD5E0</color>
-    <color name="input_stroke_focus">#005493</color>
+    <!-- BỀ MẶT & VIỀN (ui-ux M1, M13, M14, tokens.css) -->
+    <color name="background_primary">#F4F4F6</color>   <!-- token background: nền trang xám nhạt -->
+    <color name="background_card">#FFFFFF</color>      <!-- token surface: nền card, header, input -->
+    <color name="text_primary">#2C2C2C</color>         <!-- token foreground: chữ chính -->
+    <color name="text_secondary">#52525C</color>       <!-- chữ phụ -->
+    <color name="text_hint">#707070</color>            <!-- token muted: nhãn, placeholder, icon phụ (WCAG AA 4.5:1) -->
+    <color name="divider">#EAEAEA</color>              <!-- token border: đường tóc 1dp viền card & vạch chia -->
+    <color name="input_background">#FFFFFF</color>     <!-- token surface: ô nhập nền trắng (M14) -->
+    <color name="input_stroke">#D4D4D8</color>         <!-- token border-strong: viền chức năng cho ô nhập & nút outline -->
+    <color name="input_stroke_focus">#CE2020</color>   <!-- token border-focus: màu nhấn khi focus -->
+    <color name="button_outline_hover">#F1F1F3</color> <!-- token button-hover-surface -->
 
-    <!-- Status Colors -->
-    <color name="status_unread">#E53E3E</color>
-    <color name="status_unread_bg">#FFF5F5</color>
-    <color name="status_reading">#DD6B20</color>
-    <color name="status_reading_bg">#FFFAF0</color>
-    <color name="status_done">#38A169</color>
-    <color name="status_done_bg">#F0FFF4</color>
+    <!-- MÀU MANG NGHĨA: LỖI, NGUY HIỂM, TRẠNG THÁI (ui-ux M7, M30, I4) -->
+    <!-- Nguy hiểm (rose): nút xoá đứng riêng nền mờ rose-500/10, chữ rose-700, không viền -->
+    <color name="danger_text">#C70036</color>          <!-- token danger (rose-700) -->
+    <color name="danger_bg">#1AFF2056</color>          <!-- token danger-bg (rose-500/10) -->
 
-    <!-- Star -->
-    <color name="star_filled">#FFB81C</color>
-    <color name="star_empty">#E2E8F0</color>
+    <!-- Lỗi (red): câu lỗi sau khi nhập sai -->
+    <color name="status_unread">#E7000B</color>        <!-- token error-text (red-600) -->
+    <color name="status_unread_bg">#FEF2F2</color>     <!-- token error-bg (red-50) -->
+
+    <!-- Trạng thái Nhắc nhở (M7) -->
+    <color name="status_done">#007A55</color>          <!-- token success (emerald-700): Có nhắc -->
+    <color name="status_done_bg">#ECFDF5</color>       <!-- token success-bg (emerald-50) -->
+    <color name="status_reading">#BB4D00</color>       <!-- token warning (amber-700) -->
+    <color name="status_reading_bg">#FFFBEB</color>    <!-- token warning-bg (amber-50) -->
+    <color name="status_neutral">#52525C</color>       <!-- token neutral (zinc-600): Không nhắc -->
+    <color name="status_neutral_bg">#F4F4F5</color>    <!-- token neutral-bg (zinc-100) -->
+    <color name="badge_ring">#0D000000</color>         <!-- ring-black/5 giữ khung badge (M7) -->
 
     <!-- Common -->
     <color name="black">#FF000000</color>

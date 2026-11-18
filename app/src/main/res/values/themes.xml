@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ThucHanh2" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Base application theme (Flat style per ui-ux M1, M13, M15 + PTIT Brand) -->
+    <style name="Base.Theme.ThucHanh2" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/ptit_red</item>
         <item name="colorPrimaryContainer">@color/ptit_red_light</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -20,51 +20,65 @@
 
     <style name="Theme.ThucHanh2" parent="Base.Theme.ThucHanh2" />
 
-    <!-- Button Styles -->
+    <!-- Button Styles (ui-ux components/button.md, locked-rules.md #1, #2, #4, #10) -->
+    <!-- Primary: nền nhấn duy nhất của khu, bo 12dp, không bóng -->
     <style name="PrimaryButton" parent="Widget.Material3.Button">
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">12dp</item>
         <item name="backgroundTint">@color/ptit_red</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="elevation">0dp</item>
     </style>
 
+    <!-- Outline (SecondaryButton): mặc định cho nút phụ (Quay lại), nền trắng, viền border-strong -->
     <style name="SecondaryButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">12dp</item>
-        <item name="strokeColor">@color/ptit_red</item>
-        <item name="android:textColor">@color/ptit_red</item>
-        <item name="android:textSize">16sp</item>
+        <item name="backgroundTint">@color/background_card</item>
+        <item name="strokeColor">@color/input_stroke</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="rippleColor">@color/button_outline_hover</item>
     </style>
 
-    <style name="DangerButton" parent="Widget.Material3.Button">
+    <!-- Danger (Nút xoá): nền mờ rose-500/10, chữ & icon rose-700, KHÔNG viền đỏ, KHÔNG đỏ đặc (locked-rules.md #2, I4, M30) -->
+    <style name="DangerButton" parent="Widget.Material3.Button.TextButton">
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">12dp</item>
-        <item name="backgroundTint">@color/status_unread</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">16sp</item>
+        <item name="backgroundTint">@color/danger_bg</item>
+        <item name="android:textColor">@color/danger_text</item>
+        <item name="iconTint">@color/danger_text</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="elevation">0dp</item>
     </style>
 
-    <!-- TextInputLayout Style -->
+    <!-- TextInputLayout Style (bo 12dp, nền surface trắng, viền border-strong) -->
     <style name="CustomTextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxCornerRadiusTopStart">12dp</item>
         <item name="boxCornerRadiusTopEnd">12dp</item>
         <item name="boxCornerRadiusBottomStart">12dp</item>
         <item name="boxCornerRadiusBottomEnd">12dp</item>
         <item name="boxStrokeColor">@color/input_stroke_selector</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1.5dp</item>
         <item name="boxBackgroundColor">@color/input_background</item>
-        <item name="hintTextColor">@color/ptit_blue</item>
+        <item name="hintTextColor">@color/ptit_red</item>
     </style>
 
-    <!-- Card Style -->
-    <style name="BookCard" parent="Widget.Material3.CardView.Elevated">
+    <!-- Card Style (đường tóc 1dp, bo 16dp, không bóng - M13, M15) -->
+    <style name="AppointmentCard" parent="Widget.Material3.CardView.Elevated">
         <item name="cardCornerRadius">16dp</item>
         <item name="cardElevation">0dp</item>
         <item name="strokeWidth">1dp</item>
@@ -72,7 +86,7 @@
         <item name="cardBackgroundColor">@color/background_card</item>
     </style>
 
-    <!-- Chip / Badge for status -->
+    <!-- Status Badge (M7: pill rounded-full, text-xs 12sp font-medium) -->
     <style name="StatusBadge">
         <item name="android:textSize">12sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -82,14 +96,8 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
-    <!-- FAB shape -->
+    <!-- FAB shape (16dp corner per F1) -->
     <style name="FabShape" parent="">
         <item name="cornerSize">16dp</item>
-    </style>
-
-    <!-- RatingBar Theme -->
-    <style name="RatingBarTheme">
-        <item name="colorControlNormal">@color/star_empty</item>
-        <item name="colorControlActivated">@color/star_filled</item>
     </style>
 </resources>
